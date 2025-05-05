@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Mark Attendance</title>
+  <style>
+    body {
+    font-family: Arial, sans-serif;
+    background-color: #f4f4f4;
+    text-align: center;
+    margin: 0;
+    padding: 0;
+}
+
+.container {
+    background: white;
+    max-width: 400px;
+    margin: 80px auto;
+    padding: 30px;
+    border-radius: 12px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+h1 {
+    font-size: 24px;
+    margin-bottom: 20px;
+}
+
+.button {
+    display: block;
+    width: 100%;
+    padding: 15px;
+    margin: 10px 0;
+    border: none;
+    border-radius: 8px;
+    font-size: 18px;
+    font-weight: bold;
+    cursor: pointer;
+    color: white;
+    transition: background 0.3s;
+}
+
+.morning {
+    background-color: #28a745;
+}
+
+.morning:hover {
+    background-color: #218838;
+}
+
+.afternoon {
+    background-color: #007bff;
+}
+
+.afternoon:hover {
+    background-color: #0056b3;
+}
+
+.back-btn {
+    display: block;
+    width: 100%;
+    margin-top: 10px;
+    border-radius: 8px;
+    background-color: #dc3545;
+    color: white;
+    text-decoration: none;
+    font-size: 18px;
+    font-weight: bold;
+    text-align: center;
+}
+
+.back-btn:hover {
+    background-color: #c82333;
+}
+
+#status {
+    margin-top: 15px;
+    font-size: 18px;
+    font-weight: bold;
+    color: #333;
+    opacity: 0;
+    transition: opacity 0.5s ease-in-out;
+}
+
+
+  </style>
+</head>
+<body>
+
+  <div class="container">
+    <h1>Mark Attendance</h1>
+    <button class="button morning" onclick="markAttendance('morning')">Mark Morning Attendance</button>
+    <button class="button afternoon" onclick="markAttendance('afternoon')">Mark Afternoon Attendance</button>
+    <a href="{% url 'home' %}" class="back-btn">Back to Home Page</a>
+    <p id="status"></p>
+  </div>
+
+  <script>
+    function getCookie(name) {
+      let cookieValue = null;
+      if (document.cookie && document.cookie !== '') {
+        const cookies = document.cookie.split(';');
+        for (let i = 0; i < cookies.length; i++) {
+          const cookie = cookies[i].trim();
+          if (cookie.substring(0, name.length + 1) === (name + '=')) {
+            cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+            break;
+          }
+        }
+      }
+      return cookieValue;
+    }
+
+    function markAttendance(session) {
+      let now = new Date();
+      let currentHour = now.getHours();
+      let isMorning = currentHour < 12;
+
+      if (session === "morning" && !isMorning) {
+        document.getElementById("status").innerText = "This is not morning session.";
+        return;
+      } else if (session === "afternoon" && isMorning) {
+        document.getElementById("status").innerText = "This is not afternoon session.";
+        return;
+      }
+
+      fetch("/attendance/", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "X-CSRFToken": getCookie("csrftoken")
+        },
+        body: JSON.stringify({ session: session })
+      })
+      .then(response => response.json())
+      .then(data => {
+        const statusElement = document.getElementById("status");
+        statusElement.innerHTML = data.message;
+        statusElement.style.opacity = 1;
+      })
+      .catch(error => console.error("Error:", error));
+    }
+  </script>
+
+</body>
+</html>

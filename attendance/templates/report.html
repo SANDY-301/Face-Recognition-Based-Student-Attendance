@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Attendance Report</title>
+    <style>
+        body {
+    font-family: Arial, sans-serif;
+    background-color: #f4f4f4;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    margin: 0;
+}
+
+.container {
+    background: white;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    width: 350px;
+    text-align: center;
+}
+
+h2 {
+    margin-bottom: 20px;
+    color: #333;
+}
+
+form {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+label {
+    text-align: left;
+    font-weight: bold;
+    margin-top: 10px;
+}
+
+input {
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 16px;
+}
+
+button {
+    margin-top: 15px;
+    padding: 10px;
+    border: none;
+    border-radius: 5px;
+    font-size: 16px;
+    cursor: pointer;
+}
+
+button[type="button"] {
+    background-color: #28a745;
+    color: white;
+}
+
+button[type="button"]:hover {
+    background-color: #218838;
+}
+
+#downloadBtn {
+    background-color: #007bff;
+    color: white;
+    display: none;
+}
+
+#downloadBtn:hover {
+    background-color: #0056b3;
+}
+
+    </style>
+</head>
+<body>
+
+<form id="reportForm">
+    {% csrf_token %}
+    
+    <label for="reg_no">Register No:</label>
+    <input type="text" id="reg_no" name="reg_no" required>
+    
+    <label for="start_date">Start Date:</label>
+    <input type="date" id="start_date" name="start_date" required>
+
+    <label for="end_date">End Date (Optional):</label>
+    <input type="date" id="end_date" name="end_date">
+
+    <button type="button" onclick="generateReport()">Generate Report</button>
+</form>
+
+<button id="downloadBtn" style="display:none;" onclick="downloadReport()">Download PDF</button>
+
+<script>
+function getCSRFToken() {
+    let csrfToken = null;
+    const cookies = document.cookie.split(';');
+    for (let i = 0; i < cookies.length; i++) {
+        const cookie = cookies[i].trim();
+        if (cookie.startsWith("csrftoken=")) {
+            csrfToken = cookie.split("=")[1];
+            break;
+        }
+    }
+    return csrfToken;
+}
+
+function generateReport() {
+    const formData = new FormData(document.getElementById("reportForm"));
+
+    fetch("/generate_attendance_report/", {
+        method: "POST",
+        headers: { "X-CSRFToken": getCSRFToken() },
+        body: formData
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.status === "success") {
+            alert("Report generated successfully!");
+            document.getElementById("downloadBtn").style.display = "block";
+        } else {
+            alert("Error: " + data.message);
+        }
+    })
+    .catch(error => console.error("Error:", error));
+}
+
+function downloadReport() {
+    const reg_no = document.getElementById("reg_no").value;
+    const start_date = document.getElementById("start_date").value;
+    const end_date = document.getElementById("end_date").value;
+    
+    let url = `/download_attendance_report/?reg_no=${reg_no}&start_date=${start_date}`;
+    if (end_date) url += `&end_date=${end_date}`;
+
+    window.location.href = url;
+}
+</script>
+
+</body>
+</html>

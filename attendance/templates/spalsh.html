@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Face Recognition Attendance</title>
+    <style>
+        /* Body Styling */
+        body {
+            background: linear-gradient(to right, #1e3c72, #2a5298);
+            color: #fff;
+            text-align: center;
+            padding: 20px;
+        }
+
+        /* Splash Screen */
+        #splash-screen {
+            position: fixed;
+            width: 300px; /* Small size */
+            height: 180px; /* Adjusted for image */
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: rgba(255, 255, 255, 0.9);
+            color: #222;
+            text-align: center;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
+            font-size: 1.2rem;
+            font-weight: bold;
+        }
+
+        #splash-screen img {
+            display: block;
+            margin: 0 auto 10px;
+            width: 80px;
+        }
+
+        /* Hide Main Content Initially */
+        #main-content {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Splash Screen with Image -->
+    <div id="splash-screen">
+        <img src="logo.png" alt="Loading...">
+        <p>Loading...</p>
+    </div>
+
+    <!-- Main Content -->
+    <div id="main-content">
+        <h1>Face Recognition-Based Student Attendance System</h1>
+        <p>Welcome to the system!</p>
+    </div>
+
+    <script>
+        // Hide splash screen and show main content after 1 second
+        setTimeout(function () {
+            document.getElementById("splash-screen").style.display = "none";
+            document.getElementById("main-content").style.display = "block";
+        }, 1000); // 1 second
+    </script>
+
+</body>
+</html>

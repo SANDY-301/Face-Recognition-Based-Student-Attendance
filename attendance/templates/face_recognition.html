@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Face Recognition</title>
+    <style>
+      
+    body {
+        font-family: Arial, sans-serif;
+        background-color: #f4f4f4;
+        text-align: center;
+        padding: 20px;
+    }
+
+    h1 {
+        color: #333;
+    }
+
+    form {
+        background: #fff;
+        padding: 20px;
+        border-radius: 8px;
+        box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+        display: inline-block;
+        text-align: left;
+        max-width: 400px;
+        width: 100%;
+    }
+
+    label {
+        display: block;
+        margin-top: 10px;
+        font-weight: bold;
+    }
+
+    input {
+        width: 100%;
+        padding: 8px;
+        margin-top: 5px;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+        box-sizing: border-box;
+    }
+
+    form {
+    background: white; /* Ensure form background stays white */
+    padding: 30px;
+    border-radius: 12px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    text-align: center;
+}
+
+.capture-btn, .back-btn {
+    display: block;
+    width: 100%; /* Full width */
+    margin-top: 15px;
+    border: none;
+    border-radius: 20px;
+    font-size: 20px;
+    font-weight: bold;
+    cursor: pointer;
+    text-align: center;
+}
+
+.capture-btn {
+    background-color: #28a745; /* Green */
+    color: white;
+}
+
+.capture-btn:hover {
+    background-color: #218838;
+}
+
+.back-btn {
+    background-color: #dc3545; /* Red */
+    color: white;
+    text-decoration: none;
+    text-align: center;
+    
+}
+
+.back-btn:hover {
+    background-color: #c82333;
+}
+
+
+    .alert {
+        background-color: #ffdddd;
+        border-left: 5px solid #f44336;
+        padding: 15px;
+        margin: 20px auto;
+        width: 50%;
+        text-align: center;
+        border-radius: 5px;
+        display: none;
+    }
+
+    .alert p {
+        margin: 0;
+        font-size: 16px;
+        color: #333;
+    }
+
+    .alert button {
+        margin-top: 10px;
+        padding: 5px 15px;
+        background: #f44336;
+        color: white;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+    }
+
+    .alert button:hover {
+        background: #d32f2f;
+    }
+</style>
+
+</head>
+<body>
+
+  <h1>Capture Face</h1>
+
+  <div id="alertBox" class="alert" style="display: none;">
+      <p id="alertMessage"></p>
+      <button onclick="closeAlert()">OK</button>
+  </div>
+
+  <form id="captureForm">
+      {% csrf_token %}
+  
+      <label for="sname">Student Name:</label>
+      <input type="text" name="sname" placeholder="Enter Student Name" required><br>
+  
+      <label for="reg_no">Register Number:</label>
+      <input type="text" name="reg_no" placeholder="Enter Registration Number" required><br>
+  
+      <label for="phn_no">Phone Number:</label>
+      <input type="number" name="phn_no" placeholder="Enter Phone Number" required><br>
+  
+      <label for="class_name">Class Name:</label>
+      <input type="text" name="class_name" placeholder="Enter Class Name" required><br>
+  
+      <button class="capture-btn" type="submit">Capture Face</button>
+      <a href="{% url 'home' %}" class="back-btn">Back to Home Page</a>
+  </form>
+
+  <script>
+      function closeAlert() {
+          document.getElementById("alertBox").style.display = "none";
+      }
+
+      document.getElementById("captureForm").addEventListener("submit", function(event) {
+          event.preventDefault();
+          
+          const formData = new FormData(this);
+          
+          fetch("{% url 'face_recognition' %}", {
+              method: "POST",
+              body: formData
+          })
+          .then(response => response.json())
+          .then(data => {
+              const alertBox = document.getElementById("alertBox");
+              const alertMessage = document.getElementById("alertMessage");
+              
+              alertMessage.textContent = data.message;
+              alertBox.style.display = "block";
+          })
+          .catch(error => console.error("Error:", error));
+      });
+  </script>
+
+</body>
+</html>
+
