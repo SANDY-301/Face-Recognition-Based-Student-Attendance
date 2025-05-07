@@ -1,6 +1,23 @@
 Face Recognition Based Attendance System
 This project implements a Face Recognition Based Attendance System using Python and OpenCV. The system automatically marks attendance by recognizing faces from a live camera feed. It enhances traditional attendance methods by providing a touchless, fast, and reliable solution.
 
+Traditional student attendance methods, such as manual registers or RFID-based systems, are prone to inaccuracies and time-consuming processes. Managing large student populations efficiently requires an automated solution. 
+Additionally, the system provides real-time tracking and report generation, allowing institutions to monitor attendance records, generate reports, and improve administrative efficiency. 
+MODULES 
+1. Face Recognition 
+ Capture and stores student face data. 
+ Registers student details (Reg No, Name, Phone, Class).
+
+2. Attendance Management 
+ Morning and Afternoon session attendance. 
+ Face recognition-based attendance marking. 
+ Stores attendance records in the database. 
+
+3. Report Generation 
+ Fetches attendance records. 
+ Generates reports for specific dates or date ranges. 
+ Calculates attendance percentage and allows PDF download
+
 📘 Table of Contents
 Features
 
@@ -82,7 +99,7 @@ Run the application
 bash
 Copy
 Edit
-python main.py
+python manage.py runserver
 ▶️ Usage
 Launch the application.
 
@@ -92,14 +109,14 @@ Train the model with the captured images.
 
 Start attendance and let the system recognize faces and mark attendance.
 
-View attendance logs in the admin panel.
+View attendance or download pdf
 
 📂 Project Modules
 media/ — Stores face images
 
 Report — Attendance records
 
-main.py — Main application script
+manage.py — Main application script
 
 face_recognition.py — Core recognition module and register student data with images
 
