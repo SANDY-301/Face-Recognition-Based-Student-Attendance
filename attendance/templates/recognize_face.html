@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Face Recognition - Student</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+        }
+        .container {
+            max-width: 600px;
+            margin: 50px auto;
+            background: #fff;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+        h2 {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        label {
+            display: block;
+            margin: 10px 0 5px;
+            font-size: 16px;
+        }
+        input[type="text"] {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 20px;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+            font-size: 16px;
+        }
+        input[type="submit"] {
+            width: 100%;
+            padding: 12px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            font-size: 16px;
+            cursor: pointer;
+        }
+        input[type="submit"]:hover {
+            background-color: #45a049;
+        }
+        .status-message {
+            margin-top: 20px;
+            font-size: 18px;
+            text-align: center;
+        }
+        .status-success {
+            color: green;
+        }
+        .status-error {
+            color: red;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h2>Face Recognition</h2>
+    <form method="POST" action="{% url 'recognize_face' %}" enctype="multipart/form-data">
+        {% csrf_token %}
+        
+        <label for="reg_no">Enter Registration Number</label>
+        <input type="text" name="reg_no" id="reg_no" placeholder="Enter Registration Number" required>
+
+        <input type="submit" value="Recognize Face">
+    </form>
+
+    <div class="status-message">
+        {% if message %}
+            <p class="{% if status == 'success' %}status-success{% else %}status-error{% endif %}">{{ message }}</p>
+        {% endif %}
+    </div>
+</div>
+
+</body>
+</html>

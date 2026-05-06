@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Mark Attendance</title>
+  <style>
+    /* Import Google Font */
+    @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600&display=swap');
+
+    /* General Styling */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Orbitron', sans-serif;
+    }
+
+    body {
+      background: radial-gradient(circle at center, #0f0c29, #302b63, #24243e);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      text-align: center;
+    }
+
+    /* Cyberpunk Glowing Container */
+    .container {
+      background: rgba(255, 255, 255, 0.1);
+      backdrop-filter: blur(20px);
+      border-radius: 15px;
+      padding: 30px;
+      width: 90%;
+      max-width: 400px;
+      border: 2px solid rgba(0, 255, 255, 0.5);
+      box-shadow: 0 0 15px rgba(0, 255, 255, 0.6);
+      animation: fadeIn 1s ease-in-out;
+    }
+
+    h1 {
+      font-size: 2rem;
+      color: #0ff;
+      text-transform: uppercase;
+      text-shadow: 0 0 10px #0ff;
+      animation: glitch 1s infinite;
+    }
+
+    /* Glitch Effect */
+    @keyframes glitch {
+      0% { text-shadow: 2px 2px 10px #0ff, -2px -2px 10px #ff00ff; }
+      50% { text-shadow: -2px -2px 10px #0ff, 2px 2px 10px #ff00ff; }
+      100% { text-shadow: 2px 2px 10px #0ff, -2px -2px 10px #ff00ff; }
+    }
+
+    /* Cyberpunk Button */
+    .button {
+      display: block;
+      width: 100%;
+      padding: 15px;
+      margin: 15px 0;
+      font-size: 1.2rem;
+      font-weight: bold;
+      text-transform: uppercase;
+      border: none;
+      border-radius: 10px;
+      cursor: pointer;
+      color: white;
+      text-shadow: 0 0 5px white;
+      position: relative;
+      transition: transform 0.3s, box-shadow 0.3s;
+      overflow: hidden;
+    }
+
+    /* Morning Button */
+    .button.morning {
+      background: linear-gradient(90deg, #ff0099, #493240);
+      box-shadow: 0 0 15px #ff0099;
+    }
+
+    /* Afternoon Button */
+    .button.afternoon {
+      background: linear-gradient(90deg, #00c3ff, #3f2b96);
+      box-shadow: 0 0 15px #00c3ff;
+    }
+
+    /* Button Hover Effects */
+    .button:hover {
+      transform: scale(1.08);
+      box-shadow: 0px 0px 25px white;
+    }
+
+    .button:active {
+      transform: scale(0.95);
+    }
+
+    /* Glowing Animation */
+    @keyframes glow {
+      0% { box-shadow: 0px 0px 10px rgba(0, 255, 255, 0.8); }
+      50% { box-shadow: 0px 0px 20px rgba(255, 0, 255, 0.8); }
+      100% { box-shadow: 0px 0px 10px rgba(0, 255, 255, 0.8); }
+    }
+
+    /* Status Message */
+    #status {
+      font-size: 1.2rem;
+      font-weight: bold;
+      color: #ffeb3b;
+      opacity: 0;
+      transition: opacity 0.5s ease-in-out;
+      margin-top: 15px;
+    }
+
+    /* Fade-in Animation */
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+        transform: translateY(-20px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+  </style>
+</head>
+<body>
+
+  <div class="container">
+    <h1>Mark Attendance</h1>
+    <button class="button morning" onclick="markAttendance('morning')">Mark Morning Attendance</button>
+    <button class="button afternoon" onclick="markAttendance('afternoon')">Mark Afternoon Attendance</button>
+    <button><a href="{% url 'home' %}" class="back-btn">Back to Home Page</a></button>
+    <p id="status"></p>
+  </div>
+
+  <script>
+    function getCookie(name) {
+      let cookieValue = null;
+      if (document.cookie && document.cookie !== '') {
+        const cookies = document.cookie.split(';');
+        for (let i = 0; i < cookies.length; i++) {
+          const cookie = cookies[i].trim();
+          if (cookie.substring(0, name.length + 1) === (name + '=')) {
+            cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+            break;
+          }
+        }
+      }
+      return cookieValue;
+    }
+
+    function markAttendance(session) {
+      let now = new Date();
+      let currentHour = now.getHours();
+      let isMorning = currentHour < 12;
+
+      if (session === "morning" && !isMorning) {
+        document.getElementById("status").innerText = "This is not morning session.";
+        return;
+      } else if (session === "afternoon" && isMorning) {
+        document.getElementById("status").innerText = "This is not afternoon session.";
+        return;
+      }
+
+      fetch("/attendance/", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "X-CSRFToken": getCookie("csrftoken")
+        },
+        body: JSON.stringify({ session: session })
+      })
+      .then(response => response.json())
+      .then(data => {
+        const statusElement = document.getElementById("status");
+        statusElement.innerHTML = data.message;
+        statusElement.style.opacity = 1;
+      })
+      .catch(error => console.error("Error:", error));
+    }
+  </script>
+
+</body>
+</html>

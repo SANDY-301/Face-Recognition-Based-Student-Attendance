@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Face Recognition</title>
+    <style>
+ /* Import Google Font */
+@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600&display=swap');
+
+/* General Reset */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: 'Orbitron', sans-serif;
+}
+
+body {
+  background: radial-gradient(circle at center, #0f0c29, #302b63, #24243e);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  text-align: center;
+  padding: 20px;
+  overflow: hidden;
+  animation: backgroundGlow 10s infinite alternate ease-in-out;
+}
+
+/* Animated Background Glow */
+@keyframes backgroundGlow {
+  0% { filter: brightness(100%); }
+  50% { filter: brightness(120%); }
+  100% { filter: brightness(100%); }
+}
+
+/* Cyberpunk Container */
+.container {
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(15px);
+  border-radius: 15px;
+  padding: 30px;
+  width: 90%;
+  max-width: 400px;
+  border: 2px solid rgba(0, 255, 255, 0.8);
+  box-shadow: 0 0 20px rgba(0, 255, 255, 0.8);
+  animation: fadeIn 1s ease-in-out;
+}
+
+/* Heading with Cyberpunk Glitch Effect */
+/* Cyberpunk Glowing Heading */
+h1 {
+  font-size: 2.5rem;
+  color: #0ff;
+  text-transform: uppercase;
+  text-align: center;
+  text-shadow: 0 0 10px #0ff, 0 0 20px #0ff, 0 0 30px #ff00ff, 0 0 40px #ff00ff;
+  animation: glitch 1.5s infinite alternate;
+  border: 3px solid rgba(0, 255, 255, 0.8);
+  padding: 10px;
+  display: inline-block;
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(5px);
+
+  /* Center it */
+  position: absolute;
+  top: 10%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+
+/* Glitch Animation */
+@keyframes glitch {
+  0% { text-shadow: 3px 3px 10px #0ff, -3px -3px 10px #ff00ff; }
+  50% { text-shadow: -3px -3px 10px #0ff, 3px 3px 10px #ff00ff; }
+  100% { text-shadow: 3px 3px 10px #0ff, -3px -3px 10px #ff00ff; }
+}
+
+
+/* Labels */
+label {
+  display: block;
+  text-align: left;
+  font-weight: bold;
+  margin: 10px 0 5px;
+  color: #00eaff;
+  text-shadow: 0 0 5px rgba(0, 255, 255, 0.7);
+}
+
+/* Input Fields */
+input {
+  width: 100%;
+  padding: 12px;
+  border: 2px solid rgba(0, 255, 255, 0.6);
+  border-radius: 5px;
+  font-size: 1rem;
+  background: rgba(0, 0, 0, 0.6);
+  color: white;
+  outline: none;
+  transition: all 0.3s ease;
+  box-shadow: inset 0px 0px 5px rgba(0, 255, 255, 0.5);
+}
+
+/* Input Focus Effects */
+input:focus {
+  border-color: #ff00ff;
+  box-shadow: 0px 0px 15px #ff00ff, inset 0px 0px 10px #ff00ff;
+}
+
+/* Cyberpunk Buttons */
+/* Cyberpunk Button Styling */
+.button {
+  display: block;
+  width: 100%;
+  padding: 15px;
+  font-size: 1.2rem;
+  font-weight: bold;
+  text-transform: uppercase;
+  text-align: center;
+  border: none;
+  border-radius: 12px;
+  cursor: pointer;
+  color: white;
+  text-shadow: 0 0 5px white;
+  position: relative;
+  overflow: hidden;
+  transition: 0.3s ease-in-out;
+}
+
+/* Capture Face Button */
+.capture-btn {
+  background: linear-gradient(90deg, #ff0099, #493240);
+  box-shadow: 0 0 15px #ff0099, inset 0 0 10px #ff0099;
+}
+
+/* Back Button */
+.back-btn {
+  background: linear-gradient(90deg, #00c3ff, #3f2b96);
+  box-shadow: 0 0 15px #00c3ff, inset 0 0 10px #00c3ff;
+}
+
+/* Hover Effects */
+.button:hover {
+  transform: scale(1.05);
+  box-shadow: 0 0 25px white, inset 0 0 10px white;
+}
+
+/* Neon Glow Animation */
+@keyframes neonGlow {
+  0% { box-shadow: 0 0 15px #ff0099, inset 0 0 5px #ff0099; }
+  50% { box-shadow: 0 0 25px #ff0099, inset 0 0 10px #ff0099; }
+  100% { box-shadow: 0 0 15px #ff0099, inset 0 0 5px #ff0099; }
+}
+
+.capture-btn {
+  animation: neonGlow 1.5s infinite alternate;
+}
+
+.back-btn {
+  animation: neonGlow 1.5s infinite alternate-reverse;
+}
+
+/* Alert Box */
+.alert {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background: rgba(255, 0, 0, 0.9);
+  color: white;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.3);
+  text-align: center;
+  animation: fadeIn 0.5s ease-in-out;
+}
+
+/* Alert Button */
+.alert button {
+  background: white;
+  color: red;
+  border: none;
+  padding: 8px 12px;
+  cursor: pointer;
+  font-size: 1rem;
+  border-radius: 5px;
+  margin-top: 10px;
+}
+
+.alert button:hover {
+  background: lightgray;
+}
+
+/* Fade-in Animation */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(-20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+
+</style>
+</head>
+<body>
+
+  <h1>Capture Face</h1>
+
+  <div id="alertBox" class="alert" style="display: none;">
+      <p id="alertMessage"></p>
+      <button onclick="closeAlert()">OK</button>
+  </div>
+
+  <form id="captureForm">
+      {% csrf_token %}
+  
+      <label for="sname">Student Name:</label>
+      <input type="text" name="sname" placeholder="Enter Student Name" required><br>
+  
+      <label for="reg_no">Register Number:</label>
+      <input type="text" name="reg_no" placeholder="Enter Registration Number" required><br>
+  
+      <label for="phn_no">Phone Number:</label>
+      <input type="number" name="phn_no" placeholder="Enter Phone Number" required><br>
+  
+      <label for="class_name">Class Name:</label>
+      <input type="text" name="class_name" placeholder="Enter Class Name" required><br>
+  
+      <button class="capture-btn" type="submit">Capture Face</button>
+      <a href="{% url 'home' %}" class="back-btn">Back to Home Page</a>
+  </form>
+
+  <script>
+      function closeAlert() {
+          document.getElementById("alertBox").style.display = "none";
+      }
+
+      document.getElementById("captureForm").addEventListener("submit", function(event) {
+          event.preventDefault();
+          
+          const formData = new FormData(this);
+          
+          fetch("{% url 'face_recognition' %}", {
+              method: "POST",
+              body: formData
+          })
+          .then(response => response.json())
+          .then(data => {
+              const alertBox = document.getElementById("alertBox");
+              const alertMessage = document.getElementById("alertMessage");
+              
+              alertMessage.textContent = data.message;
+              alertBox.style.display = "block";
+          })
+          .catch(error => console.error("Error:", error));
+      });
+  </script>
+
+</body>
+</html>
+
